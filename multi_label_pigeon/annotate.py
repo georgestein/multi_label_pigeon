@@ -1,6 +1,7 @@
 from collections import defaultdict
 import functools
 import random
+import matplotlib.pyplot as plt
 
 from IPython.display import clear_output, display
 from ipywidgets import (Button,
