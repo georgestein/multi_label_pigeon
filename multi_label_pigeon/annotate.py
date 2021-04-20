@@ -221,12 +221,15 @@ def multi_label_annotate(examples, example_labels=None, options=None, shuffle=Fa
                 btn.disabled = True
             with out:
                 clear_output()
+                if use_example_labels:
+                    plt.close()
             return
         with out:
             clear_output(wait=True)
             if use_example_labels:
                 plt.close()
             display_fn(examples[current_index])
+
 
     def go_back():
         clear_colors()
@@ -237,6 +240,8 @@ def multi_label_annotate(examples, example_labels=None, options=None, shuffle=Fa
             return
         with out:
             clear_output(wait=True)
+            if use_example_labels:
+                plt.close()
             try:
                 del annotation_dict[example_labels[current_index]]
                 set_label_text()
@@ -337,7 +342,8 @@ def multi_label_annotate(examples, example_labels=None, options=None, shuffle=Fa
     out = Output()
     display(out)
 
-    
+    if use_example_labels:
+        plt.close()
     show_next()
 
     return annotation_dict
