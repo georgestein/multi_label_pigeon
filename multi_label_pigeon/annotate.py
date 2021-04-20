@@ -39,7 +39,9 @@ def annotate(examples,
     annotations : list of tuples, list of annotated examples (example, label)
     """
     examples = list(examples)
+    use_example_labels = True
     if example_labels is None:
+        use_example_labels = False
         example_labels = examples
         
     if shuffle:
@@ -68,6 +70,8 @@ def annotate(examples,
             return
         with out:
             clear_output(wait=True)
+            if use_example_labels:
+                plt.close()
             display_fn(examples[current_index])
 
     def add_annotation(annotation):
@@ -177,7 +181,9 @@ def multi_label_annotate(examples, example_labels=None, options=None, shuffle=Fa
         (example, {task:[label... label],task2:[label]})
     """
     examples = list(examples)
+    use_example_labels = True
     if example_labels is None:
+        use_example_labels = False
         example_labels = examples
         
     if shuffle:
@@ -217,6 +223,8 @@ def multi_label_annotate(examples, example_labels=None, options=None, shuffle=Fa
             return
         with out:
             clear_output(wait=True)
+            if use_example_labels:
+                plt.close()
             display_fn(examples[current_index])
 
     def go_back():
@@ -328,6 +336,7 @@ def multi_label_annotate(examples, example_labels=None, options=None, shuffle=Fa
     out = Output()
     display(out)
 
+    
     show_next()
 
     return annotation_dict
