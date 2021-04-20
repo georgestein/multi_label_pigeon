@@ -14,6 +14,7 @@ from ipywidgets import (Button,
 
 
 def annotate(examples,
+             example_labels=None,
              options=None,
              shuffle=False,
              include_skip=True,
@@ -24,6 +25,7 @@ def annotate(examples,
     Parameters
     ----------
     examples: list(any), list of items to annotate
+    example_labels: list(string), if examples are one large numpy array
     options: list(any) or tuple(start, end, [step]) or None
              if list: list of labels for binary classification task (Dropdown or Buttons)
              if tuple: range for regression task (IntSlider or FloatSlider)
@@ -37,8 +39,14 @@ def annotate(examples,
     annotations : list of tuples, list of annotated examples (example, label)
     """
     examples = list(examples)
+    if example_labels is None:
+        example_labels = examples
+        
     if shuffle:
-        random.shuffle(examples)
+        ind_shuff = np.arange(len(examples))
+        random.shuffle(ind_shuff)
+        examples = examples[ind_shuff]
+        example_labels = example_labels[ind_shuff]
 
     annotations = []
     current_index = -1
@@ -63,7 +71,8 @@ def annotate(examples,
             display_fn(examples[current_index])
 
     def add_annotation(annotation):
-        annotations.append((examples[current_index], annotation))
+        annotations.append((example_labels[current_index], annotation))
+
         show_next()
 
     def skip(btn):
@@ -148,13 +157,14 @@ def annotate(examples,
     return annotations
 
 
-def multi_label_annotate(examples, options=None, shuffle=False, display_fn=display):
+def multi_label_annotate(examples, example_labels=None, options=None, shuffle=False, display_fn=display):
     """
     Build an interactive widget for annotating a list of input examples.
 
     Parameters
     ----------
     examples: list(any), list of items to annotate
+    example_labels: list(string), if examples are one large numpy array
     options: Dict
         dictionary of category names and category classes
         ex {'gender':['male', 'female', 'unisex']}
@@ -167,8 +177,14 @@ def multi_label_annotate(examples, options=None, shuffle=False, display_fn=displ
         (example, {task:[label... label],task2:[label]})
     """
     examples = list(examples)
+    if example_labels is None:
+        example_labels = examples
+        
     if shuffle:
-        random.shuffle(examples)
+        ind_shuff = np.arange(len(examples))
+        random.shuffle(ind_shuff)
+        examples = examples[ind_shuff]
+        example_labels = example_labels[ind_shuff]
 
     annotation_dict = defaultdict(dict)
     all_buttons = []
@@ -213,7 +229,7 @@ def multi_label_annotate(examples, options=None, shuffle=False, display_fn=displ
         with out:
             clear_output(wait=True)
             try:
-                del annotation_dict[examples[current_index]]
+                del annotation_dict[example_labels[current_index]]
                 set_label_text()
                 display_fn(examples[current_index])
             except KeyError:
@@ -221,21 +237,21 @@ def multi_label_annotate(examples, options=None, shuffle=False, display_fn=displ
 
     def del_current_annotation():
         nonlocal current_index
-        del annotation_dict[examples[current_index]]
+        del annotation_dict[example_labels[current_index]]
         current_index -= 1
         show_next()
 
     def add_annotation(annotation_dict, annotation, task_name):
-        if task_name not in annotation_dict[examples[current_index]].keys():
-            annotation_dict[examples[current_index]][task_name] = [annotation]
+        if task_name not in annotation_dict[example_labels[current_index]].keys():
+            annotation_dict[example_labels[current_index]][task_name] = [annotation]
         else:
             # check if the annotation is already in the `annotation_dict`, if so, that means
             # it has been clicked a second time, and we should remove both the color and
             # the annotation
-            if annotation in annotation_dict[examples[current_index]][task_name]:
-                annotation_dict[examples[current_index]][task_name].remove(annotation)
+            if annotation in annotation_dict[example_labels[current_index]][task_name]:
+                annotation_dict[example_labels[current_index]][task_name].remove(annotation)
             else:
-                annotation_dict[examples[current_index]][task_name].append(annotation)
+                annotation_dict[example_labels[current_index]][task_name].append(annotation)
 
     def skip(btn):
         show_next()
