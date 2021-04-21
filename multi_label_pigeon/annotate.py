@@ -162,7 +162,7 @@ def annotate(examples,
     return annotations
 
 
-def multi_label_annotate(examples, example_labels=None, options=None, shuffle=False, display_fn=display):
+def multi_label_annotate(examples, example_labels=None, options=None, shuffle=False, display_fn=display, figsize=[8,8]):
     """
     Build an interactive widget for annotating a list of input examples.
 
@@ -186,7 +186,7 @@ def multi_label_annotate(examples, example_labels=None, options=None, shuffle=Fa
     if example_labels is None:
         use_example_labels = False
         example_labels = examples
-        
+
     if shuffle:
         ind_shuff = np.arange(len(examples))
         random.shuffle(ind_shuff)
@@ -203,7 +203,7 @@ def multi_label_annotate(examples, example_labels=None, options=None, shuffle=Fa
         if current_index < len(examples):
             count_label.value = (
                 '{} examples annotated, {} examples left<br>Asset name: <code>{}</code><hr>'.format(
-                    len(annotation_dict), len(examples) - current_index, examples[current_index]
+                    len(annotation_dict), len(examples) - current_index, example_labels[current_index]
                 )
             )
         else:
@@ -212,8 +212,6 @@ def multi_label_annotate(examples, example_labels=None, options=None, shuffle=Fa
             )
 
     def show_next():
-        print('DEBUG CLOSING PLOT', use_example_labels)
-
         clear_colors()
         nonlocal current_index
         current_index += 1
@@ -224,12 +222,14 @@ def multi_label_annotate(examples, example_labels=None, options=None, shuffle=Fa
             with out:
                 clear_output()
                 if use_example_labels:
-                    plt.close()
+                    plt.close(fig)
             return
         with out:
             clear_output(wait=True)
             if use_example_labels:
-                plt.close()
+                plt.close(fig)
+                plt.figure(figsize=figsize)
+
             display_fn(examples[current_index])
 
 
@@ -243,7 +243,7 @@ def multi_label_annotate(examples, example_labels=None, options=None, shuffle=Fa
         with out:
             clear_output(wait=True)
             if use_example_labels:
-                plt.close()
+                plt.close(fig)
             try:
                 del annotation_dict[example_labels[current_index]]
                 set_label_text()
@@ -343,9 +343,7 @@ def multi_label_annotate(examples, example_labels=None, options=None, shuffle=Fa
 
     out = Output()
     display(out)
-
-    if use_example_labels:
-        plt.close()
+    
     show_next()
 
     return annotation_dict
