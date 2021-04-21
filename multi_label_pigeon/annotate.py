@@ -1,7 +1,6 @@
 from collections import defaultdict
 import functools
 import random
-import matplotlib.pyplot as plt
 
 from IPython.display import clear_output, display
 from ipywidgets import (Button,
@@ -71,8 +70,6 @@ def annotate(examples,
             return
         with out:
             clear_output(wait=True)
-            if use_example_labels:
-                plt.close()
             display_fn(examples[current_index])
 
     def add_annotation(annotation):
@@ -162,7 +159,7 @@ def annotate(examples,
     return annotations
 
 
-def multi_label_annotate(examples, example_labels=None, options=None, shuffle=False, display_fn=display, figsize=[8,8]):
+def multi_label_annotate(examples, example_labels=None, options=None, shuffle=False, display_fn=display):
     """
     Build an interactive widget for annotating a list of input examples.
 
@@ -221,17 +218,9 @@ def multi_label_annotate(examples, example_labels=None, options=None, shuffle=Fa
                 btn.disabled = True
             with out:
                 clear_output()
-                if use_example_labels:
-                    plt.close(fig)
             return
         with out:
             clear_output(wait=True)
-            if current_index > 0:
-                plt.close(fig)
-
-            if use_example_labels:
-                fig = plt.figure(figsize=figsize)
-
             display_fn(examples[current_index])
 
 
@@ -244,8 +233,6 @@ def multi_label_annotate(examples, example_labels=None, options=None, shuffle=Fa
             return
         with out:
             clear_output(wait=True)
-            if use_example_labels:
-                plt.close(fig)
             try:
                 del annotation_dict[example_labels[current_index]]
                 set_label_text()
