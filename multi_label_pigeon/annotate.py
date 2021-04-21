@@ -226,9 +226,11 @@ def multi_label_annotate(examples, example_labels=None, options=None, shuffle=Fa
             return
         with out:
             clear_output(wait=True)
-            if use_example_labels:
+            if current_index > 0:
                 plt.close(fig)
-                plt.figure(figsize=figsize)
+
+            if use_example_labels:
+                fig = plt.figure(figsize=figsize)
 
             display_fn(examples[current_index])
 
