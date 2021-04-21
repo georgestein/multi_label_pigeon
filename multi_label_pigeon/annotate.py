@@ -212,6 +212,8 @@ def multi_label_annotate(examples, example_labels=None, options=None, shuffle=Fa
             )
 
     def show_next():
+        print('DEBUG CLOSING PLOT', use_example_labels)
+
         clear_colors()
         nonlocal current_index
         current_index += 1
@@ -222,7 +224,6 @@ def multi_label_annotate(examples, example_labels=None, options=None, shuffle=Fa
             with out:
                 clear_output()
                 if use_example_labels:
-                    print('DEBUG CLOSING PLOT')
                     plt.close()
             return
         with out:
