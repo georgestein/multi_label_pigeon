@@ -159,7 +159,7 @@ def annotate(examples,
     return annotations
 
 
-def multi_label_annotate(examples, example_labels=None, options=None, shuffle=False, display_fn=display):
+def multi_label_annotate(examples, example_labels=None, options=None, shuffle=False, display_fn=display, include_skip=False, save_file='annotations.npy'):
     """
     Build an interactive widget for annotating a list of input examples.
 
@@ -186,7 +186,8 @@ def multi_label_annotate(examples, example_labels=None, options=None, shuffle=Fa
 
     if shuffle:
         ind_shuff = np.arange(len(examples))
-        random.shuffle(ind_shuff)
+        # set seed
+        random.Random(42).shuffle(ind_shuff)
         examples = examples[ind_shuff]
         example_labels = example_labels[ind_shuff]
 
@@ -208,6 +209,9 @@ def multi_label_annotate(examples, example_labels=None, options=None, shuffle=Fa
                 len(annotation_dict), len(examples) - current_index
             )
 
+    def save_current():
+        np.save(save_file, annotation_dict)
+        
     def show_next():
         clear_colors()
         nonlocal current_index
@@ -263,6 +267,9 @@ def multi_label_annotate(examples, example_labels=None, options=None, shuffle=Fa
 
     def done(btn):
         show_next()
+
+    def save(btn):
+        save_current()
 
     def back(btn):
         go_back()
@@ -321,9 +328,14 @@ def multi_label_annotate(examples, example_labels=None, options=None, shuffle=Fa
     btn.on_click(clear_annotation)
     buttons.append(btn)
 
-    btn = Button(description='skip')
+    btn = Button(description='save')
     btn.on_click(skip)
     buttons.append(btn)
+
+    if include_skip:
+        btn = Button(description='skip')
+        btn.on_click(skip)
+        buttons.append(btn)
 
     all_buttons += buttons
 
