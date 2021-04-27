@@ -1,6 +1,7 @@
 from collections import defaultdict
 import functools
 import random
+import numpy as np
 
 from IPython.display import clear_output, display
 from ipywidgets import (Button,
