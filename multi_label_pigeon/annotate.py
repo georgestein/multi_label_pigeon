@@ -160,7 +160,7 @@ def annotate(examples,
     return annotations
 
 
-def multi_label_annotate(examples, example_labels=None, options=None, shuffle=False, display_fn=display, include_skip=False, save_file='annotations.npy'):
+def multi_label_annotate(examples, example_labels=None, options=None, shuffle=False, display_fn=display, include_skip=False, save_file='annotations'):
     """
     Build an interactive widget for annotating a list of input examples.
 
@@ -211,7 +211,8 @@ def multi_label_annotate(examples, example_labels=None, options=None, shuffle=Fa
             )
 
     def save_current():
-        np.save(save_file, annotation_dict)
+        nonlocal current_index
+        np.save(save_file+'{:d}.npy'.format(current_index), annotation_dict)
         
     def show_next():
         clear_colors()
