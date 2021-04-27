@@ -329,7 +329,7 @@ def multi_label_annotate(examples, example_labels=None, options=None, shuffle=Fa
     buttons.append(btn)
 
     btn = Button(description='save')
-    btn.on_click(skip)
+    btn.on_click(save)
     buttons.append(btn)
 
     if include_skip:
